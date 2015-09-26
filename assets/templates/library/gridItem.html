@@ -1,12 +1,16 @@
-<div class="grid-item" id="{%=o.Book.ISBN %}">
-	{% if(o.Book.Type == "book") { %}
-		<div style="width:200px; height:250px; overflow-y:hidden; float:left">
-			<img style="width:200px;" src="{%=o.Book.Image %}">
-		</div>
-		<div id="title{%=o.Book.ISBN %}" style="width:100px; height:30px; visibility:hidden; float:left">{%=o.Book.ISBN %}</div>
-	{% } else if(o.Book.Type == "author") { %}
-	
-	{% } else if(o.Book.Type == "gender") { %}
-	
-	{% } %}
+{% if(o.Data.Type == "book") { %}
+<div class="grid-item" id="{%=o.Data.ISBN %}">
+	<div style="width:200px; height:250px; overflow-y:hidden; float:left">
+		<img style="width:200px;" src="{%=o.Data.Image %}">
+	</div>
+	<div id="title{%=o.Data.ISBN %}" style="width:100px; height:30px; visibility:hidden; float:left">{%=o.Data.ISBN %}</div>
+{% } else if(o.Data.Type == "author") { %}
+<div class="grid-item" id="{%=o.Data.ISBN %}">
+	<div id="title{%=o.Data.Name %}" style="width:200px; height:250px; float:left">{%=o.Data.Name %}</div>
+{% } else if(o.Data.Type == "gender") { %}
+
+{% } else if(o.Data.Type == "menu") { %}
+<div class="grid-item">
+	<div id="title{%=o.Data.Name %}" style="width:200px; height:250px; float:left">{%=o.Data.Name %}</div>
+{% } %}
 </div>

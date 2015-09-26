@@ -92,22 +92,27 @@ class LibraryController extends AbstractController implements INavigable {
 		
 		this.mGridItemList = new Array<any>();
 		
-		document.getElementById("core").innerHTML += this.mLibraryView.RenderTemplate({});
+		document.getElementById("core").innerHTML += this.mLibraryView.RenderTemplate({
+																						Data: {
+																							Type: "menu",	
+																							menu: [
+																									"auteurs",
+																									"genres",
+																									"titres"
+																								]
+																							}
+																						});
 		
 		this.mSearchController = new SearchController();
 		this.mSearchController.Init('searchBar');
 		this.mSearchController.AddEventListener(SearchEvent.RESULTS, this.OnBookListLoaded, this);
 		
-		this.mMasonry = new Masonry( '.grid', {
-												columnWidth: 200,
-												itemSelector: '.grid-item',
-												transitionDuration: '0.2s'
-											});
+		this.mLibraryView.AddEventListener(MouseTouchEvent.TOUCHED, this.OnScreenClicked, this);
+		
+		this.RefreshGridList();
 	}
 	
 	private RefreshGridList():void{
-		
-		var bookList:Array<Book> = this.mLibraryModel.GetBookList();
 		
 		var gridDiv:HTMLElement = document.getElementById("grid");
 		
@@ -117,6 +122,67 @@ class LibraryController extends AbstractController implements INavigable {
 			
 			this.mGridItemList.splice(0,1);
 		}
+		
+		/*if(this.mLibraryView.Data.Type = "menu"){
+			
+			this.ShowMenuList();
+			
+		} else */{
+			
+			this.ShowBookList();
+		}
+	}
+	
+	private ShowMenuList():void {
+		
+		var menuList:Array<any> = [
+									{Type:"menu", Name:"auteurs"},
+									{Type:"menu", Name:"genres"},
+									{Type:"menu", Name:"titres"}
+								];
+		
+		for(var i:number = 0; i < menuList.length; i++){
+			
+			var gridItem:AbstractView = new AbstractView();
+			
+			gridItem.AddEventListener(MVCEvent.TEMPLATE_LOADED, this.OnMenuTemplateLoaded, this);
+			
+			gridItem.LoadTemplate("templates/library/gridItem.html");
+			
+			this.mGridItemList.push({view:gridItem, menu:menuList[i], loaded:false});
+		}
+	}
+	
+	private SetupMenuTemplate(aMenuTemplate:AbstractView):void {
+		
+		aMenuTemplate.RemoveEventListener(MVCEvent.TEMPLATE_LOADED, this.OnBookTemplateLoaded, this);
+		
+		for(var i:number = 0; i < this.mGridItemList.length; i++){
+			
+			if(this.mGridItemList[i].view == aMenuTemplate){
+				
+				this.mGridItemList[i].loaded = true;
+				
+				document.getElementById("grid")
+					.insertAdjacentHTML("beforeend", 
+										aMenuTemplate.RenderTemplate({ Data:this.mGridItemList[i].menu }));
+				break;
+			}
+		}
+		
+		this.mLibraryView.AddClickControl(document.getElementById(this.mGridItemList[i].book.ISBN));
+	}
+	
+	private OnMenuTemplateLoaded(aEvent:MVCEvent):void{
+		
+		this.SetupMenuTemplate(<AbstractView>aEvent.target);
+		
+		this.InitMasonry();
+	}
+	
+	private ShowBookList():void {
+		
+		var bookList:Array<Book> = this.mLibraryModel.GetBookList();
 		
 		for(var i:number = 0; i < bookList.length; i++){
 			
@@ -135,8 +201,6 @@ class LibraryController extends AbstractController implements INavigable {
 		this.mLibraryModel.FormatBookData(this.mSearchController.results);
 		
 		this.RefreshGridList();
-		
-		this.mLibraryView.AddEventListener(MouseTouchEvent.TOUCHED, this.OnScreenClicked, this);
 	}
 	
 	private SetupBookTemplate(aBookTemplate:AbstractView):void {
@@ -150,7 +214,8 @@ class LibraryController extends AbstractController implements INavigable {
 				this.mGridItemList[i].loaded = true;
 				
 				document.getElementById("grid")
-					.insertAdjacentHTML("beforeend", aBookTemplate.RenderTemplate({Book:this.mGridItemList[i].book}));
+					.insertAdjacentHTML("beforeend", 
+										aBookTemplate.RenderTemplate({ Data:this.mGridItemList[i].book }));
 				break;
 			}
 		}
@@ -199,6 +264,7 @@ class LibraryController extends AbstractController implements INavigable {
 			
 			element.className = "grid-item-selected";
 			document.getElementById("title"+bookISBN).style.visibility = "visible";
+			
 		} else {
 			
 			element.className = "grid-item";

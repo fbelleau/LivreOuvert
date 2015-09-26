@@ -27,8 +27,6 @@ class LibraryModel extends AbstractModel {
 	
 	private mBookList:Array<Book>;
 	
-	public static AUTHOR_URL:string = "http://louiscyr2.bio2rdf.org/biblio-lo-v2/_search?q=";
-	
 	constructor() {
 		
 		super();
@@ -52,22 +50,6 @@ class LibraryModel extends AbstractModel {
 		}
 		
 		return(null);
-	}
-	
-	public RequestBookList():void {
-		
-		this.AddEventListener(MVCEvent.JSON_LOADED, this.OnBookListLoaded, this);
-		
-		this.Fetch(LibraryModel.AUTHOR_URL);
-	}
-	
-	private OnBookListLoaded(aEvent:MVCEvent):void{
-		
-		this.RemoveEventListener(MVCEvent.JSON_LOADED, this.OnBookListLoaded, this);
-		
-		this.FormatBookData(this.mDataCache[LibraryModel.AUTHOR_URL].hits.hits);
-		
-		this.DispatchEvent(new LibraryEvent(LibraryEvent.BOOK_FETCHED));
 	}
 	
 	public FormatBookData(aData:any):void{
