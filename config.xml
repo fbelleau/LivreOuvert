@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<widget id="com.cortex.rtc" version="1.0.25" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>RTC</name>
+    <description>Prototype RTC</description>
+    <author email="devaccount@cortexmedia.ca" href="http://cordova.io">Cortex Media Inc.</author>
+
+	<access origin="*" />
+	<access origin="*.google.com" />
+    <access origin="*.googleapis.com" />
+    <access origin="*.gstatic.com" />
+    <access origin="*.googleusercontent.com" />
+    <access origin="google.com" subdomains="true"/>
+    <access origin="googleapis.com" subdomains="true"/>
+    <access origin="gstatic.com" subdomains="true"/>
+    <access origin="googleusercontent.com" subdomains="true"/>
+	
+    <content src="index.html" />
+
+    <preference name="fullscreen" value="true" />
+    <preference name="webviewbounce" value="false" />
+    <preference name="UIWebViewBounce" value="false" />
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="SplashScreen" value="screen" />
+    <preference name="SplashScreenDelay" value="3000" />
+</widget>

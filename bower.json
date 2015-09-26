@@ -1,0 +1,13 @@
+{
+  "name": "cortexwebtemplate",
+  "version": "0.0.1",
+  "authors": [
+    "Mathieu Cote <mcote@cortexmedia.ca>",
+    "Mathieu Rhéaume <mrheaume@cortexmedia.ca>"
+  ],
+  "description": "Cortex Web Template",
+  "private": true,
+  "dependencies": {
+    "routie": "~0.3.2"
+  }
+}
