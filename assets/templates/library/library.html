@@ -5,8 +5,19 @@
 		</div>
 	</div>
     <div class="grid">
-		{% for(var i=0; i<o.bookList.length; i++) { %}
-				<img class="grid-item" src="{%=o.bookList[i].Image %}">
+		{% for(var i=0; i<o.dataList.length; i++) { %}
+			<div class="grid-item" id="{%=o.dataList[i].ISBN %}">
+				{% if(o.dataList[i].Type == "book") { %}
+					<div style="width:200px; height:250px; overflow-y:hidden; float:left">
+						<img style="width:200px;" src="{%=o.dataList[i].Image %}">
+					</div>
+					<div id="title{%=o.dataList[i].ISBN %}" style="width:100px; height:30px; visibility:hidden; float:left">{%=o.dataList[i].ISBN %}</div>
+				{% } else if(o.dataList[i].Type == "author") { %}
+				
+				{% } else if(o.dataList[i].Type == "gender") { %}
+				
+				{% } %}
+			</div>
 		{% } %}
 	</div>
 </div>

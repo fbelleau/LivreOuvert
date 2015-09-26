@@ -41,6 +41,19 @@ class LibraryModel extends AbstractModel {
 		return this.mBookList;
 	}
 	
+	public GetBookByISBN(aISBN:string):Book {
+		
+		for(var i:number = 0; i < this.mBookList.length; i++){
+			
+			if(this.mBookList[i].ISBN == aISBN){
+				
+				return(this.mBookList[i]);
+			}
+		}
+		
+		return(null);
+	}
+	
 	public RequestBookList():void {
 		
 		this.AddEventListener(MVCEvent.JSON_LOADED, this.OnBookListLoaded, this);
