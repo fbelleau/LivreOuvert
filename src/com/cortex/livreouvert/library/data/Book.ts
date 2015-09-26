@@ -14,9 +14,10 @@
  * @author Mathieu 'Sanchez' Cote
  */
 
-import ComponentData = require("../../../core/component/data/ComponentData");
+import ElasticInterface = require("./ElasticInterface");
+import ElasticTypes = require("./ElasticTypes");
 
-class Book extends ComponentData {
+class Book implements ElasticInterface {
 	
 	private mISBN:string;
 	private mType:string;
@@ -25,16 +26,8 @@ class Book extends ComponentData {
 	private mCollection:string;
 	private mImage:string;
 	
-	constructor() {
-		
-		super();
-	}
-	
 	public get ISBN():string { return this.mISBN; }
 	public set ISBN(aValue:string) { this.mISBN = aValue; }
-	
-	public get Type():string { return this.mType; }
-	public set Type(aValue:string) { this.mType = aValue; }
 	
 	public get Title():string { return this.mTitle; }
 	public set Title(aValue:string) { this.mTitle = aValue; }
@@ -48,13 +41,19 @@ class Book extends ComponentData {
 	public get Image():string { return this.mImage; }
 	public set Image(aValue:string) { this.mImage = aValue; }
 	
-	public FromJSON(aData:any):void{
-		this.mTitle = aData.name;
-		this.mAuthor = aData.author;
-		this.mType = "book";
-		this.mImage = aData.image;
-		this.ISBN = aData.isbn;
-		this.mTitle = aData.title;
+	/**
+	 * Interface methods
+	 */
+	
+	public Type():ElasticTypes {
+		return ElasticTypes.Book; 
+	}
+	
+	public LoadJSON(json:any):void {
+		this.mTitle = json.name;
+		this.mAuthor = json.author;
+		this.mImage = json.image;
+		this.ISBN = json.isbn;
 	}
 }
 
