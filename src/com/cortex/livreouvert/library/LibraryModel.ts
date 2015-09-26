@@ -74,6 +74,8 @@ class LibraryModel extends AbstractModel {
 		
 		var rawData:Array<any> = aData.hits.hits;
 		
+		this.mBookList.length = 0;
+		
 		for(var i:number = 0; i < rawData.length; i++){
 			
 			var book:Book = new Book();
