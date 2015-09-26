@@ -25,8 +25,8 @@ import LazyLoader = require("../../core/net/LazyLoader");
 class SearchController extends AbstractController implements INavigable {
 	
 	private mSearchView:AbstractView;
-	
 	private static mRouteList:Array<string> = ["", "typeahead"];
+	private mTimeout;
 	
 	constructor() {
 		super();
@@ -41,7 +41,7 @@ class SearchController extends AbstractController implements INavigable {
 	}
 	
 	public Destroy():void {
-		var loginHTMLElement:HTMLElement = document.getElementById("searchWrapper");
+		var loginHTMLElement:HTMLElement = document.getElementById("searchResults");
 		document.getElementById("core").removeChild(loginHTMLElement);
 		
 		this.mSearchView.Destroy();
@@ -53,20 +53,33 @@ class SearchController extends AbstractController implements INavigable {
 	private OnTemplateLoaded( aEvent: MVCEvent ): void {
 		var _class = this;
 		document.getElementById("searchBar").innerHTML += this.mSearchView.RenderTemplate({});
-		document.getElementById("keywords").addEventListener('keyup', function() { _class.OnKeyUpEvent(_class) });
+		this.bindEvents();
 		this.mSearchView.RemoveEventListener(MVCEvent.TEMPLATE_LOADED, this.OnTemplateLoaded, this);
 	}
 	
-	public OnKeyUpEvent(_class): void {
+	public InputTextUpdated(): void {
+		console.log(this.mTimeout);
+		if(this.mTimeout) {
+			clearTimeout(this.mTimeout);
+		}
+		this.mTimeout = setTimeout(this.UpdateResults.bind(this), 200);
+	}
+	
+	private UpdateResults():void {
 		var keywords = (<HTMLInputElement>document.getElementById("keywords")).value;
+		if(keywords.length < 2) {
+			document.getElementById("typeAHeadresults").innerHTML = '';
+		}
 		if(keywords.length > 1) {
+			keywords = keywords.replace('-',' ');
 			var elasticSearchQuery = {
 				"query" : {
 					"query_string": {
 						"fields" : ["name"],
-						"query" : keywords + "*"
+						"query" : keywords + "*",
+						"default_operator" : "AND"
 					}
-			},
+				},
 				"highlight" : {
 					"pre_tags" : ["<b>"],
 					"post_tags" : ["</b>"],
@@ -79,16 +92,19 @@ class SearchController extends AbstractController implements INavigable {
 			var url = "http://louiscyr2.bio2rdf.org/biblio-lo-v2/_search";
 			LazyLoader.killLast();
 			var promise = LazyLoader.sendJSON(url, elasticSearchQuery, true);
-			promise.then(() => this.OnDataReceived(promise.result,_class,keywords));
+			promise.then(() => this.OnDataReceived(promise.result, keywords));
 		}
 	}
 	
-	private OnDataReceived(data,_class,keywords): void {
-		document.getElementById("searchBar").innerHTML = _class.mSearchView.RenderTemplate(data);
-		(<HTMLInputElement>document.getElementById("keywords")).value = keywords;
-		document.getElementById("keywords").addEventListener('keyup', function() { _class.OnKeyUpEvent(_class) });
-		document.getElementById("keywords").focus()
-	}	
+	private bindEvents(): void {
+		document.getElementById("keywords").addEventListener('keyup', this.InputTextUpdated.bind(this) );
+		document.getElementById("keywords").addEventListener('change', this.InputTextUpdated.bind(this) );
+	}
+	
+	private OnDataReceived(data,keywords): void {
+		document.getElementById("typeAHeadresults").innerHTML = this.mSearchView.RenderTemplate(data);
+		this.bindEvents();
+	}		
 }
 
 export = SearchController;
