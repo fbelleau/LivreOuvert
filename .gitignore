@@ -1,4 +1,6 @@
 node_modules
 bower_components
 .sass-cache
-www/assets
+www/assets/
+www/img/
+www/templates/
