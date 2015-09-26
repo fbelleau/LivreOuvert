@@ -45,7 +45,7 @@ import LoginEvent = require("../login/event/LoginEvent");
 
 import UserController = require("../user/UserController");
 import UserEvent = require("../user/event/UserEvent");
-import IndexController = require("../index/IndexController");
+import SearchController = require("../search/SearchController");
 
 class Main implements IKeyBindable {
 	
@@ -83,7 +83,7 @@ class Main implements IKeyBindable {
 	}
 	
 	private IndexScreen():void{
-		this.SetupNavigable("index", IndexController);
+		this.SetupNavigable("search", SearchController);
 	}
 	
 	private ShowLoginScreen():void{
