@@ -52,7 +52,7 @@ class SearchController extends AbstractController implements INavigable {
 	
 	private OnTemplateLoaded( aEvent: MVCEvent ): void {
 		var _class = this;
-		document.getElementById("core").innerHTML += this.mSearchView.RenderTemplate({});
+		document.getElementById("searchBar").innerHTML += this.mSearchView.RenderTemplate({});
 		document.getElementById("keywords").addEventListener('keyup', function() { _class.OnKeyUpEvent(_class) });
 		this.mSearchView.RemoveEventListener(MVCEvent.TEMPLATE_LOADED, this.OnTemplateLoaded, this);
 	}
@@ -63,7 +63,7 @@ class SearchController extends AbstractController implements INavigable {
 			var elasticSearchQuery = {
 				"query" : {
 					"query_string": {
-						"fields" : ["titre"],
+						"fields" : ["name"],
 						"query" : keywords + "*"
 					}
 			},
@@ -71,12 +71,12 @@ class SearchController extends AbstractController implements INavigable {
 					"pre_tags" : ["<b>"],
 					"post_tags" : ["</b>"],
 					"fields" : {
-						"titre" : {}
+						"name" : {}
 					}
 				}
 			};
 			
-			var url = "http://livreouvert.santerref.net/biblio-paris/resource/_search";
+			var url = "http://louiscyr2.bio2rdf.org/biblio-lo-v2/_search";
 			LazyLoader.killLast();
 			var promise = LazyLoader.sendJSON(url, elasticSearchQuery, true);
 			promise.then(() => this.OnDataReceived(promise.result,_class,keywords));
@@ -84,7 +84,7 @@ class SearchController extends AbstractController implements INavigable {
 	}
 	
 	private OnDataReceived(data,_class,keywords): void {
-		document.getElementById("core").innerHTML = _class.mSearchView.RenderTemplate(data);
+		document.getElementById("searchBar").innerHTML = _class.mSearchView.RenderTemplate(data);
 		(<HTMLInputElement>document.getElementById("keywords")).value = keywords;
 		document.getElementById("keywords").addEventListener('keyup', function() { _class.OnKeyUpEvent(_class) });
 		document.getElementById("keywords").focus()

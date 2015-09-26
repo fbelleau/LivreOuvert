@@ -5,9 +5,9 @@
 			<ul>
 			{% for(var i=0; i<o.hits.hits.length; i++) { %}
 				{% if(o.hits.hits[i].highlight) { %}
-				<li>{%#o.hits.hits[i].highlight.titre %}</li>
+				<li>{%#o.hits.hits[i].highlight.name %}</li>
 				{% } else { %}
-				<li>{%=o.hits.hits[i]._source.fields.titre %}</li>
+				<li>{%=o.hits.hits[i]._source.fields.name %}</li>
 				{% } %}
 			{% } %}
 			</ul>
