@@ -1,6 +1,9 @@
 node_modules
 bower_components
 .sass-cache
-www/assets/
 www/img/
 www/templates/
+www/assets
+www/assets/app.js
+www/lib
+*.map

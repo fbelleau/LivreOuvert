@@ -29,6 +29,7 @@
     "gulp-util": "^3.0.0",
     "jquery": "^2.1.4",
     "merge-stream": "^0.1.7",
+    "masonry-layout": "^3.3.2",
     "requirejs": "^2.1.17",
     "velocity-animate": "^1.2.2",
     "yargs": "^1.3.1"
