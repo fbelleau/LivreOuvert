@@ -1,0 +1,16 @@
+<div id="searchWrapper">
+	<input type="text" name="keywords" value="" id="keywords" size="80" />
+	<div id="results">
+		{% if(o.hits && o.hits.hits.length > 0) { %}
+			<ul>
+			{% for(var i=0; i<o.hits.hits.length; i++) { %}
+				{% if(o.hits.hits[i].highlight) { %}
+				<li>{%#o.hits.hits[i].highlight.titre %}</li>
+				{% } else { %}
+				<li>{%=o.hits.hits[i]._source.fields.titre %}</li>
+				{% } %}
+			{% } %}
+			</ul>
+		{% } %}
+	</div>
+</div>
