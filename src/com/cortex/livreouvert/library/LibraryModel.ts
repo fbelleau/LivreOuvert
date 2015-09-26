@@ -82,7 +82,6 @@ class LibraryModel extends AbstractModel {
 			book.FromJSON(rawData[i]._source)
 			this.mBookList.push(book)
 		}
-		
 	}
 	
 	public static GetInstance():LibraryModel{
