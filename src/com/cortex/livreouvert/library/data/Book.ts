@@ -52,7 +52,7 @@ class Book extends ComponentData {
 		this.mTitle = aData.name;
 		this.mAuthor = aData.author;
 		this.mType = "book";
-		this.mImage = aData.image.split(".jpg").join("b.jpg");
+		this.mImage = aData.image;
 		this.ISBN = aData.isbn;
 		this.mTitle = aData.title;
 	}

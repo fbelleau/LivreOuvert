@@ -24,6 +24,8 @@ import Logger = require("../../core/debug/Logger");
 
 import LibraryModel = require("./LibraryModel");
 import LibraryEvent = require("./event/LibraryEvent");
+import Book = require("./data/Book");
+
 import SearchController = require("../search/SearchController");
 import SearchEvent = require("../search/event/SearchEvent");
 
@@ -35,6 +37,8 @@ class LibraryController extends AbstractController implements INavigable {
 	
 	private mLibraryView:AbstractView;
 	private mLibraryModel:LibraryModel;
+	
+	private mGridItemList:Array<any>;
 	
 	private mSearchController:SearchController;
 	private mMasonry:any;
@@ -86,6 +90,8 @@ class LibraryController extends AbstractController implements INavigable {
 		
 		var templateData:any = {dataList:this.mLibraryModel.GetBookList()};
 		
+		this.mGridItemList = new Array<any>();
+		
 		document.getElementById("core").innerHTML += this.mLibraryView.RenderTemplate({});
 		
 		this.mSearchController = new SearchController();
@@ -95,9 +101,28 @@ class LibraryController extends AbstractController implements INavigable {
 	
 	private OnBookListLoaded(aEvent:LibraryEvent):void {
 		
-		var templateData:any = {dataList:this.mSearchController.results};
+		this.mLibraryModel.FormatBookData(this.mSearchController.results);
 		
-		document.getElementById("core").innerHTML += this.mLibraryView.RenderTemplate(templateData);
+		var bookList:Array<Book> = this.mLibraryModel.GetBookList();
+		
+		var gridDiv:HTMLElement = document.getElementById("grid");
+		
+		while(this.mGridItemList.length > 0) {
+			
+			gridDiv.removeChild(gridDiv.firstChild);
+			this.mGridItemList.splice(0,1);
+		}
+		
+		for(var i:number = 0; i < bookList.length; i++){
+			
+			var gridItem:AbstractView = new AbstractView();
+			
+			gridItem.AddEventListener(MVCEvent.TEMPLATE_LOADED, this.OnBookTemplateLoaded, this);
+			
+			gridItem.LoadTemplate("templates/library/gridItem.html");
+			
+			this.mGridItemList.push({view:gridItem, book:bookList[i]});
+		}
 		
 		this.mMasonry = new Masonry( '.grid', {
 												columnWidth: 200,
@@ -107,10 +132,26 @@ class LibraryController extends AbstractController implements INavigable {
 		
 		this.mLibraryView.AddEventListener(MouseTouchEvent.TOUCHED, this.OnScreenClicked, this);
 		
-		for(var i:number = 0; i < templateData.dataList.length; i++){
-			 
-			this.mLibraryView.AddClickControl(document.getElementById(templateData.dataList[i].ISBN));
+		
+	}
+	
+	private OnBookTemplateLoaded(aEvent:MVCEvent):void{
+		
+		var bookTemplate:AbstractView = <AbstractView>aEvent.target;
+		
+		bookTemplate.RemoveEventListener(MVCEvent.TEMPLATE_LOADED, this.OnBookTemplateLoaded, this);
+		
+		for(var i:number = 0; i < this.mGridItemList.length; i++){
+			
+			if(this.mGridItemList[i].view == bookTemplate){
+				
+				document.getElementById("grid")
+					.insertAdjacentHTML("beforeend", bookTemplate.RenderTemplate({Book:this.mGridItemList[i].book}));
+				break;
+			}
 		}
+		
+		this.mLibraryView.AddClickControl(document.getElementById(this.mGridItemList[i].book.ISBN));
 		
 		this.mMasonry.layout();
 	}

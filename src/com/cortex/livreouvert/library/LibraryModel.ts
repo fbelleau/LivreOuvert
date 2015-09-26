@@ -65,7 +65,14 @@ class LibraryModel extends AbstractModel {
 		
 		this.RemoveEventListener(MVCEvent.JSON_LOADED, this.OnBookListLoaded, this);
 		
-		var rawData:Array<any> = this.mDataCache[LibraryModel.AUTHOR_URL].hits.hits;
+		this.FormatBookData(this.mDataCache[LibraryModel.AUTHOR_URL].hits.hits);
+		
+		this.DispatchEvent(new LibraryEvent(LibraryEvent.BOOK_FETCHED));
+	}
+	
+	public FormatBookData(aData:any):void{
+		
+		var rawData:Array<any> = aData.hits.hits;
 		
 		for(var i:number = 0; i < rawData.length; i++){
 			
@@ -74,7 +81,6 @@ class LibraryModel extends AbstractModel {
 			this.mBookList.push(book)
 		}
 		
-		this.DispatchEvent(new LibraryEvent(LibraryEvent.BOOK_FETCHED));
 	}
 	
 	public static GetInstance():LibraryModel{
