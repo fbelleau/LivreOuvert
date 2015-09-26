@@ -30,10 +30,13 @@ declare var Masonry: any;
 
 class LibraryController extends AbstractController implements INavigable {
 	
+	private static mRouteList:Array<string> = ["", "library"];
+	
 	private mLibraryView:AbstractView;
 	private mLibraryModel:LibraryModel;
-	private static mRouteList:Array<string> = ["", "library"];
+	
 	private mSearchController:SearchController;
+	private mMasonry:any;
 	
 	constructor() {
 		
@@ -64,8 +67,6 @@ class LibraryController extends AbstractController implements INavigable {
 	
 	private OnTemplateLoaded( aEvent: MVCEvent ): void {
 		
-		
-		
 		this.mLibraryView.RemoveEventListener(MVCEvent.TEMPLATE_LOADED, this.OnTemplateLoaded, this);
 		
 		if(document.readyState == "complete" || document.readyState == "interactive"){
@@ -88,30 +89,46 @@ class LibraryController extends AbstractController implements INavigable {
 	
 	private OnBookListLoaded(aEvent:LibraryEvent):void {
 		
-		document.getElementById("core").innerHTML += this.mLibraryView.RenderTemplate({bookList:this.mLibraryModel.GetBookList()});
+		var templateData:any = {dataList:this.mLibraryModel.GetBookList()};
+		
+		document.getElementById("core").innerHTML += this.mLibraryView.RenderTemplate(templateData);
 		
 		this.mSearchController = new SearchController();
 		this.mSearchController.Init('searchBar');
 		
-		var msnry = new Masonry( '.grid', {
-		// options
-		});	
+		this.mMasonry = new Masonry( '.grid', {
+												columnWidth: 200,
+												itemSelector: '.grid-item',
+												transitionDuration: '0.2s'
+											});
+		
+		this.mLibraryView.AddEventListener(MouseTouchEvent.TOUCHED, this.OnScreenClicked, this);
+		
+		for(var i:number = 0; i < templateData.dataList.length; i++){
+			 
+			this.mLibraryView.AddClickControl(document.getElementById(templateData.dataList[i].ISBN));
+		}
+		
+		this.mMasonry.layout();
 	}
 	
 	private OnScreenClicked(aEvent:MVCEvent):void{
 		
 		var element:HTMLElement = <HTMLElement>aEvent.currentTarget;
 		
-		if(element.id == "connect"){
+		var bookISBN:string = this.mLibraryModel.GetBookByISBN(element.id).ISBN;
+		
+		if(element.className == "grid-item"){
 			
-			//DO LOGIN
+			element.className = "grid-item-selected";
+			document.getElementById("title"+bookISBN).style.visibility = "visible";
+		} else {
 			
-		} else if(element.id == "register"){
-			
-			//this.DispatchEvent(new LoginEvent(LoginEvent.SHOW_TEAM));
+			element.className = "grid-item";
+			document.getElementById("title"+bookISBN).style.visibility = "hidden";
 		}
 		
-		console.log(element.id);
+		this.mMasonry.layout();
 	}
 }
 

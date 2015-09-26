@@ -19,6 +19,7 @@ import ComponentData = require("../../../core/component/data/ComponentData");
 class Book extends ComponentData {
 	
 	private mISBN:string;
+	private mType:string;
 	private mTitle:string;
 	private mAuthor:string;
 	private mCollection:string;
@@ -31,6 +32,9 @@ class Book extends ComponentData {
 	
 	public get ISBN():string { return this.mISBN; }
 	public set ISBN(aValue:string) { this.mISBN = aValue; }
+	
+	public get Type():string { return this.mType; }
+	public set Type(aValue:string) { this.mType = aValue; }
 	
 	public get Title():string { return this.mTitle; }
 	public set Title(aValue:string) { this.mTitle = aValue; }
@@ -45,8 +49,9 @@ class Book extends ComponentData {
 	public set Image(aValue:string) { this.mImage = aValue; }
 	
 	public FromJSON(aData:any):void{
-		this.mTitle = aData.title;
+		this.mTitle = aData.name;
 		this.mAuthor = aData.author;
+		this.mType = "book";
 		this.mImage = aData.image.split(".jpg").join("b.jpg");
 		this.ISBN = aData.isbn;
 		this.mTitle = aData.title;
