@@ -24,6 +24,7 @@ import Logger = require("../../core/debug/Logger");
 
 import LibraryModel = require("./LibraryModel");
 import LibraryEvent = require("./event/LibraryEvent");
+import SearchController = require("../search/SearchController");
 
 declare var Masonry: any;
 
@@ -32,6 +33,7 @@ class LibraryController extends AbstractController implements INavigable {
 	private mLibraryView:AbstractView;
 	private mLibraryModel:LibraryModel;
 	private static mRouteList:Array<string> = ["", "library"];
+	private mSearchController:SearchController;
 	
 	constructor() {
 		
@@ -62,6 +64,8 @@ class LibraryController extends AbstractController implements INavigable {
 	
 	private OnTemplateLoaded( aEvent: MVCEvent ): void {
 		
+		
+		
 		this.mLibraryView.RemoveEventListener(MVCEvent.TEMPLATE_LOADED, this.OnTemplateLoaded, this);
 		
 		if(document.readyState == "complete" || document.readyState == "interactive"){
@@ -85,6 +89,9 @@ class LibraryController extends AbstractController implements INavigable {
 	private OnBookListLoaded(aEvent:LibraryEvent):void {
 		
 		document.getElementById("core").innerHTML += this.mLibraryView.RenderTemplate({bookList:this.mLibraryModel.GetBookList()});
+		
+		this.mSearchController = new SearchController();
+		this.mSearchController.Init('searchBar');
 		
 		var msnry = new Masonry( '.grid', {
 		// options

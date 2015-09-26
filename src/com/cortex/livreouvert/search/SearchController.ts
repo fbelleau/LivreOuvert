@@ -52,7 +52,7 @@ class SearchController extends AbstractController implements INavigable {
 	
 	private OnTemplateLoaded( aEvent: MVCEvent ): void {
 		var _class = this;
-		document.getElementById("core").innerHTML += this.mSearchView.RenderTemplate({});
+		document.getElementById("searchBar").innerHTML += this.mSearchView.RenderTemplate({});
 		document.getElementById("keywords").addEventListener('keyup', function() { _class.OnKeyUpEvent(_class) });
 		this.mSearchView.RemoveEventListener(MVCEvent.TEMPLATE_LOADED, this.OnTemplateLoaded, this);
 	}
@@ -84,7 +84,7 @@ class SearchController extends AbstractController implements INavigable {
 	}
 	
 	private OnDataReceived(data,_class,keywords): void {
-		document.getElementById("core").innerHTML = _class.mSearchView.RenderTemplate(data);
+		document.getElementById("searchBar").innerHTML = _class.mSearchView.RenderTemplate(data);
 		(<HTMLInputElement>document.getElementById("keywords")).value = keywords;
 		document.getElementById("keywords").addEventListener('keyup', function() { _class.OnKeyUpEvent(_class) });
 		document.getElementById("keywords").focus()
