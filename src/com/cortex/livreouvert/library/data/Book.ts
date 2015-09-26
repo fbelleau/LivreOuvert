@@ -47,7 +47,7 @@ class Book extends ComponentData {
 	public FromJSON(aData:any):void{
 		this.mTitle = aData.title;
 		this.mAuthor = aData.author;
-		this.mImage = aData.image;
+		this.mImage = aData.image.split(".jpg").join("b.jpg");
 		this.ISBN = aData.isbn;
 		this.mTitle = aData.title;
 	}
