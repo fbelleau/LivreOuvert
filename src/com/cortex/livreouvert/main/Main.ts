@@ -45,6 +45,7 @@ import LoginEvent = require("../login/event/LoginEvent");
 
 import UserController = require("../user/UserController");
 import UserEvent = require("../user/event/UserEvent");
+import IndexController = require("../index/IndexController");
 
 class Main implements IKeyBindable {
 	
@@ -78,7 +79,11 @@ class Main implements IKeyBindable {
 	
 	private SetupRouting():void{
 		
-		routie("", this.ShowLoginScreen.bind( this ) );
+		routie("", this.IndexScreen.bind( this ) );
+	}
+	
+	private IndexScreen():void{
+		this.SetupNavigable("index", IndexController);
 	}
 	
 	private ShowLoginScreen():void{
