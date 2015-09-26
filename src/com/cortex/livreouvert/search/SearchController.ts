@@ -77,6 +77,7 @@ class SearchController extends AbstractController implements INavigable {
 			};
 			
 			var url = "http://livreouvert.santerref.net/biblio-paris/resource/_search";
+			LazyLoader.killLast();
 			var promise = LazyLoader.sendJSON(url, elasticSearchQuery, true);
 			promise.then(() => this.OnDataReceived(promise.result,_class,keywords));
 		}
