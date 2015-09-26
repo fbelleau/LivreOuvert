@@ -148,7 +148,7 @@ function CompileAssets() {
 
 function CompileScripts(aSourceMap, aRemoveComment)
 {
-    return gulp.src('src/com/cortex/template/main/Main.ts')
+    return gulp.src('src/com/cortex/livreouvert/main/Main.ts')
         .pipe(gulpTypescript({
             sourcemap: aSourceMap,
             removeComments: aRemoveComment,

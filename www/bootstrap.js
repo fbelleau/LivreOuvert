@@ -7,13 +7,13 @@ require.config({
 	},
 	
 	shim: {
-		'assets/template/main/Main': {
+		'assets/livreouvert/main/Main': {
 			deps: ['routie', 'tmpl', 'jquery']
 		}
 	}
 	
 });
 
-require(['assets/template/main/Main'], function(Main) {
+require(['assets/livreouvert/main/Main'], function(Main) {
  	return new Main();
 });
