@@ -21,12 +21,14 @@ import NavigationManager = require("../../core/navigation/NavigationManager");
 import INavigable = require("../../core/navigation/INavigable");
 import Logger = require("../../core/debug/Logger");
 import LazyLoader = require("../../core/net/LazyLoader");
+import SearchEvent = require("./event/SearchEvent");
 
 class SearchController extends AbstractController implements INavigable {
 	
 	private mSearchView:AbstractView;
 	private static mRouteList:Array<string> = ["", "typeahead"];
 	private mTimeout;
+	public results;
 	
 	constructor() {
 		super();
@@ -103,6 +105,8 @@ class SearchController extends AbstractController implements INavigable {
 	
 	private OnDataReceived(data,keywords): void {
 		document.getElementById("typeAHeadresults").innerHTML = this.mSearchView.RenderTemplate(data);
+		this.results = data;
+		this.DispatchEvent(new SearchEvent(SearchEvent.RESULTS));
 		this.bindEvents();
 	}		
 }
