@@ -4,3 +4,4 @@ bower_components
 www/assets
 www/assets/app.js
 www/lib
+*.map
