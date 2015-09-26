@@ -97,11 +97,15 @@ class LibraryController extends AbstractController implements INavigable {
 		this.mSearchController = new SearchController();
 		this.mSearchController.Init('searchBar');
 		this.mSearchController.AddEventListener(SearchEvent.RESULTS, this.OnBookListLoaded, this);
+		
+		this.mMasonry = new Masonry( '.grid', {
+												columnWidth: 200,
+												itemSelector: '.grid-item',
+												transitionDuration: '0.2s'
+											});
 	}
 	
-	private OnBookListLoaded(aEvent:LibraryEvent):void {
-		
-		this.mLibraryModel.FormatBookData(this.mSearchController.results);
+	private RefreshGridList():void{
 		
 		var bookList:Array<Book> = this.mLibraryModel.GetBookList();
 		
@@ -109,7 +113,8 @@ class LibraryController extends AbstractController implements INavigable {
 		
 		while(this.mGridItemList.length > 0) {
 			
-			gridDiv.removeChild(gridDiv.firstChild);
+			gridDiv.removeChild(gridDiv.lastChild);
+			
 			this.mGridItemList.splice(0,1);
 		}
 		
@@ -121,39 +126,67 @@ class LibraryController extends AbstractController implements INavigable {
 			
 			gridItem.LoadTemplate("templates/library/gridItem.html");
 			
-			this.mGridItemList.push({view:gridItem, book:bookList[i]});
+			this.mGridItemList.push({view:gridItem, book:bookList[i], loaded:false});
 		}
-		
-		this.mMasonry = new Masonry( '.grid', {
-												columnWidth: 200,
-												itemSelector: '.grid-item',
-												transitionDuration: '0.2s'
-											});
-		
-		this.mLibraryView.AddEventListener(MouseTouchEvent.TOUCHED, this.OnScreenClicked, this);
-		
-		
 	}
 	
-	private OnBookTemplateLoaded(aEvent:MVCEvent):void{
+	private OnBookListLoaded(aEvent:LibraryEvent):void {
 		
-		var bookTemplate:AbstractView = <AbstractView>aEvent.target;
+		this.mLibraryModel.FormatBookData(this.mSearchController.results);
 		
-		bookTemplate.RemoveEventListener(MVCEvent.TEMPLATE_LOADED, this.OnBookTemplateLoaded, this);
+		this.RefreshGridList();
+		
+		this.mLibraryView.AddEventListener(MouseTouchEvent.TOUCHED, this.OnScreenClicked, this);
+	}
+	
+	private SetupBookTemplate(aBookTemplate:AbstractView):void {
+		
+		aBookTemplate.RemoveEventListener(MVCEvent.TEMPLATE_LOADED, this.OnBookTemplateLoaded, this);
 		
 		for(var i:number = 0; i < this.mGridItemList.length; i++){
 			
-			if(this.mGridItemList[i].view == bookTemplate){
+			if(this.mGridItemList[i].view == aBookTemplate){
+				
+				this.mGridItemList[i].loaded = true;
 				
 				document.getElementById("grid")
-					.insertAdjacentHTML("beforeend", bookTemplate.RenderTemplate({Book:this.mGridItemList[i].book}));
+					.insertAdjacentHTML("beforeend", aBookTemplate.RenderTemplate({Book:this.mGridItemList[i].book}));
 				break;
 			}
 		}
 		
 		this.mLibraryView.AddClickControl(document.getElementById(this.mGridItemList[i].book.ISBN));
+	}
+	
+	private InitMasonry():void{
 		
+		var initMasonry:boolean = true;
+		
+		for(var i:number = 0; i < this.mGridItemList.length; i++){
+			
+			if(!this.mGridItemList[i].loaded){
+				
+				initMasonry = false;
+				break;
+			}
+		}
+		
+		if(!initMasonry){ return; }
+			
+		this.mMasonry = new Masonry( '.grid', {
+												columnWidth: 200,
+												itemSelector: '.grid-item',
+												transitionDuration: '0.2s'
+											});
+											
 		this.mMasonry.layout();
+	}
+	
+	private OnBookTemplateLoaded(aEvent:MVCEvent):void{
+		
+		this.SetupBookTemplate(<AbstractView>aEvent.target);
+		
+		this.InitMasonry();
 	}
 	
 	private OnScreenClicked(aEvent:MVCEvent):void{
