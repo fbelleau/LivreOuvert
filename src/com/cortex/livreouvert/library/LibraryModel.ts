@@ -27,7 +27,7 @@ class LibraryModel extends AbstractModel {
 	
 	private mBookList:Array<Book>;
 	
-	public static AUTHOR_URL:string = "http://louiscyr2.bio2rdf.org/biblio-lo-v2/_search?/q=author";
+	public static AUTHOR_URL:string = "http://louiscyr2.bio2rdf.org/biblio-lo-v2/_search?q=tibo";
 	
 	constructor() {
 		
