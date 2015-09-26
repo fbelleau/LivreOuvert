@@ -15,6 +15,5 @@ require.config({
 });
 
 require(['assets/livreouvert/main/Main'], function(Main) {
-
  	return new Main();
 });

@@ -74,8 +74,6 @@ class Main implements IKeyBindable {
 			
 			outputStyle.visibility = outputStyle.visibility == "hidden" ? "visible" : "hidden";
 		}
-		
-		console.log(aKeyList);
 	}
 	
 	private SetupRouting():void{

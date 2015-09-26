@@ -20,6 +20,8 @@ import P = require("../../promise/promise");
  * @classdesc Provides a simple way to use Promise with XHR Callback
  */
 class LazyLoader {
+    
+    private static mXHR:XMLHttpRequest;
     /**
      * @memberof com.cortex.core.net.LazyLoader
      * @param {string} aFile - Path of the file to fetch
@@ -163,7 +165,14 @@ class LazyLoader {
         };
 
         xhr.send (JSON.stringify(aJsonObject));
+        LazyLoader.mXHR = xhr;
         return deferObject.promise();
+    }
+    
+    public static killLast() {
+        if(LazyLoader.mXHR) {
+            LazyLoader.mXHR.abort();
+        }
     }
 
     /**
