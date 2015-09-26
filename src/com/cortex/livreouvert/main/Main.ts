@@ -40,12 +40,13 @@ import DepartmentEvent = require("../department/event/DepartmentEvent");
 import EvaluationController = require("../evaluation/EvaluationController");
 import EvaluationEvent = require("../evaluation/event/EvaluationEvent");
 
-import LoginController = require("../login/LoginController");
+import LibraryController = require("../library/LibraryController");
 import LoginEvent = require("../login/event/LoginEvent");
 
 import UserController = require("../user/UserController");
 import UserEvent = require("../user/event/UserEvent");
-import SearchController = require("../search/SearchController");
+
+import LazyLoader = require("../../core/net/LazyLoader");
 
 class Main implements IKeyBindable {
 	
@@ -73,22 +74,20 @@ class Main implements IKeyBindable {
 			
 			outputStyle.visibility = outputStyle.visibility == "hidden" ? "visible" : "hidden";
 		}
-		
-		console.log(aKeyList);
 	}
 	
 	private SetupRouting():void{
 		
-		routie("", this.IndexScreen.bind( this ) );
+		routie("", this.ShowLibraryScreen.bind( this ) );
 	}
 	
-	private IndexScreen():void{
-		this.SetupNavigable("search", SearchController);
+	private OnDataLoaded(aResult):void{
+		console.log(aResult);
 	}
 	
-	private ShowLoginScreen():void{
+	private ShowLibraryScreen():void{
 		
-		this.SetupNavigable("login", LoginController);
+		this.SetupNavigable("library", LibraryController);
 		
 		this.mLastController.AddEventListener(LoginEvent.SHOW_TEAM, this.OnShowTeamScreen, this);
 	}
