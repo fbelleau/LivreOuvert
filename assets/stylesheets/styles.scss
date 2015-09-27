@@ -4,6 +4,16 @@
    License: none (public domain)
 */
 
+body, html, * {
+	font-family: "Source Sans Pro", Arial, sans-serif;
+	font-size: 18px;
+}
+
+input {
+	font-size: 18px;
+	padding: 5px;
+}
+
 #loading {
     width: 24px;
     height: 24px;
@@ -23,15 +33,24 @@
 	width: 120px;
 	background-color: hotpink;
 }
+
 .grid-item { 
 	width: 200px;
 	height: 250px;
 	overflow-y: hidden;
 	background-color: none;
+	padding: 10px;
 }
 .grid-item-selected {
-	width: 100%;
 	height: 500px;
 	overflow-y: hidden;
-	background-color: chocolate;
+	background-color: #f0f0f0;
+	border: 1px solid #CCCCCC;
+	padding: 10px;
+	
+	.book-data {
+		padding-left: 208px; 
+		height:auto; 
+		visibility:hidden;
+	}
 }

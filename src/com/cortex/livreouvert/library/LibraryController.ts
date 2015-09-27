@@ -98,11 +98,11 @@ class LibraryController extends AbstractController implements INavigable {
 		this.mSearchController.Init('searchBar');
 		this.mSearchController.AddEventListener(SearchEvent.RESULTS, this.OnBookListLoaded, this);
 		
-		this.mMasonry = new Masonry( '.grid', {
+		/*this.mMasonry = new Masonry( '.grid', {
 												columnWidth: 200,
 												itemSelector: '.grid-item',
 												transitionDuration: '0.2s'
-											});
+											});*/
 	}
 	
 	private RefreshGridList():void{
@@ -131,11 +131,8 @@ class LibraryController extends AbstractController implements INavigable {
 	}
 	
 	private OnBookListLoaded(aEvent:LibraryEvent):void {
-		
 		this.mLibraryModel.FormatBookData(this.mSearchController.results);
-		
 		this.RefreshGridList();
-		
 		this.mLibraryView.AddEventListener(MouseTouchEvent.TOUCHED, this.OnScreenClicked, this);
 	}
 	
@@ -148,9 +145,8 @@ class LibraryController extends AbstractController implements INavigable {
 			if(this.mGridItemList[i].view == aBookTemplate){
 				
 				this.mGridItemList[i].loaded = true;
-				
 				document.getElementById("grid")
-					.insertAdjacentHTML("beforeend", aBookTemplate.RenderTemplate({Book:this.mGridItemList[i].book}));
+					.insertAdjacentHTML("beforeend", aBookTemplate.RenderTemplate({ElasticObject:this.mGridItemList[i].book}));
 				break;
 			}
 		}
@@ -173,13 +169,13 @@ class LibraryController extends AbstractController implements INavigable {
 		
 		if(!initMasonry){ return; }
 			
-		this.mMasonry = new Masonry( '.grid', {
+		/*this.mMasonry = new Masonry( '.grid', {
 												columnWidth: 200,
 												itemSelector: '.grid-item',
 												transitionDuration: '0.2s'
-											});
+											});*/
 											
-		this.mMasonry.layout();
+		/*this.mMasonry.layout();*/
 	}
 	
 	private OnBookTemplateLoaded(aEvent:MVCEvent):void{
@@ -205,7 +201,7 @@ class LibraryController extends AbstractController implements INavigable {
 			document.getElementById("title"+bookISBN).style.visibility = "hidden";
 		}
 		
-		this.mMasonry.layout();
+		//this.mMasonry.layout();
 	}
 }
 

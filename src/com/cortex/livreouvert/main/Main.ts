@@ -15,9 +15,6 @@
  */
 
 /// <reference path="../../../../../definitions/routie/routie.d.ts" />
-/// <reference path="../../../../../definitions/cordova/cordova.d.ts" />
-/// <reference path="../../../../../definitions/google/google.d.ts" />
-/// <reference path="../../../../../definitions/jquery/jquery.d.ts" />
 
 import MVCEvent = require("../../core/mvc/event/MVCEvent");
 import AbstractController = require("../../core/mvc/AbstractController");
@@ -26,25 +23,7 @@ import KeyManager = require("../../core/key/KeyManager");
 import IKeyBindable = require("../../core/key/IKeyBindable");
 import NavigationManager = require("../../core/navigation/NavigationManager");
 
-import TeamController = require("../team/TeamController");
-import TeamEvent = require("../team/event/TeamEvent");
-
-import ProjectListController = require("../project/ProjectListController");
-import ProjectCreationController = require("../project/ProjectCreationController");
-import ProjectEditController = require("../project/ProjectEditController");
-import ProjectEvent = require("../project/event/ProjectEvent");
-
-import DepartmentController = require("../department/DepartmentController");
-import DepartmentEvent = require("../department/event/DepartmentEvent");
-
-import EvaluationController = require("../evaluation/EvaluationController");
-import EvaluationEvent = require("../evaluation/event/EvaluationEvent");
-
 import LibraryController = require("../library/LibraryController");
-import LoginEvent = require("../login/event/LoginEvent");
-
-import UserController = require("../user/UserController");
-import UserEvent = require("../user/event/UserEvent");
 
 import LazyLoader = require("../../core/net/LazyLoader");
 
@@ -86,96 +65,7 @@ class Main implements IKeyBindable {
 	}
 	
 	private ShowLibraryScreen():void{
-		
 		this.SetupNavigable("library", LibraryController);
-		
-		this.mLastController.AddEventListener(LoginEvent.SHOW_TEAM, this.OnShowTeamScreen, this);
-	}
-	
-	private OnShowTeamScreen(aEvent:LoginEvent):void{
-		
-		<TeamController>(aEvent.target).RemoveEventListener(LoginEvent.SHOW_TEAM, this.OnShowTeamScreen, this);
-		
-		this.ShowTeamScreen();
-	}
-	
-	private ShowTeamScreen():void{
-		
-		this.SetupNavigable("team", TeamController);
-		
-		this.mLastController.AddEventListener(TeamEvent.SHOW_DEPARTMENT, this.OnShowDepartmentScreen, this);
-	}
-	
-	private OnShowDepartmentScreen(aEvent:TeamEvent):void{
-		
-		<TeamController>(aEvent.target).RemoveEventListener(TeamEvent.SHOW_DEPARTMENT, this.OnShowDepartmentScreen, this);
-		
-		this.ShowDepartmentScreen();
-	}
-	
-	private ShowDepartmentScreen():void{
-		
-		this.SetupNavigable("department", DepartmentController);
-		
-		this.mLastController.AddEventListener(DepartmentEvent.SHOW_USER, this.OnShowUserScreen, this);
-	}
-	
-	private OnShowUserScreen(aEvent:DepartmentEvent):void{
-		
-		<TeamController>(aEvent.target).RemoveEventListener(DepartmentEvent.SHOW_USER, this.OnShowUserScreen, this);
-		
-		this.ShowUserScreen();
-	}
-	
-	private ShowUserScreen():void{
-		
-		this.SetupNavigable("user", UserController);
-		
-		this.mLastController.AddEventListener(ProjectEvent.SHOW_PROJECT_LIST, this.OnShowProjectListScreen, this);
-	}
-	
-	private OnShowProjectListScreen(aEvent:DepartmentEvent):void{
-		
-		this.mLastController.RemoveEventListener(ProjectEvent.SHOW_PROJECT_LIST, this.OnShowProjectListScreen, this);
-		
-		this.ShowProjectListScreen();
-	}
-	
-	private ShowProjectListScreen():void{
-		
-		this.SetupNavigable("projectList", ProjectListController);
-		
-		this.mLastController.AddEventListener(ProjectEvent.SHOW_PROJECT_CREATION, this.OnShowProjectCreationScreen, this);
-		this.mLastController.AddEventListener(ProjectEvent.SHOW_PROJECT_EDIT, this.OnShowProjectEditScreen, this);
-	}
-	
-	private OnShowProjectCreationScreen(aEvent:ProjectEvent):void{
-				
-		this.SetupNavigable("projectCreation", ProjectCreationController);
-		
-		this.mLastController.AddEventListener(ProjectEvent.SHOW_PROJECT_LIST, this.OnShowProjectListScreen, this);
-		this.mLastController.AddEventListener(ProjectEvent.SHOW_PROJECT_EDIT, this.OnShowProjectEditScreen, this);
-	}
-	
-	private OnShowProjectEditScreen(aEvent:ProjectEvent) {
-		
-		this.mLastController.RemoveEventListener(ProjectEvent.SHOW_PROJECT_LIST, this.OnShowProjectListScreen, this);
-		this.mLastController.RemoveEventListener(ProjectEvent.SHOW_PROJECT_EDIT, this.OnShowProjectEditScreen, this);
-		
-		this.SetupNavigable("projectEdit", ProjectEditController);
-		
-		this.mLastController.AddEventListener(ProjectEvent.SHOW_PROJECT_LIST, this.OnShowProjectListScreen, this);
-		this.mLastController.AddEventListener(ProjectEvent.SHOW_EVALUATION, this.OnShowEvaluationScreen, this)
-	}
-	
-	private OnShowEvaluationScreen(aEvent:ProjectEvent):void {
-					
-		this.mLastController.RemoveEventListener(ProjectEvent.SHOW_PROJECT_LIST, this.OnShowProjectListScreen, this);
-		this.mLastController.RemoveEventListener(ProjectEvent.SHOW_EVALUATION, this.OnShowEvaluationScreen, this);		
-		
-		this.SetupNavigable("evaluation", EvaluationController);
-		
-		this.mLastController.AddEventListener(ProjectEvent.SHOW_PROJECT_EDIT, this.OnShowProjectEditScreen, this);
 	}
 	
 	private SetupNavigable(aName:string, aControllerClass:any):void {

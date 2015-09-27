@@ -60,7 +60,6 @@ class SearchController extends AbstractController implements INavigable {
 	}
 	
 	public InputTextUpdated(): void {
-		console.log(this.mTimeout);
 		if(this.mTimeout) {
 			clearTimeout(this.mTimeout);
 		}

@@ -79,7 +79,7 @@ class LibraryModel extends AbstractModel {
 		for(var i:number = 0; i < rawData.length; i++){
 			
 			var book:Book = new Book();
-			book.FromJSON(rawData[i]._source)
+			book.LoadJSON(rawData[i]._source)
 			this.mBookList.push(book)
 		}
 	}
