@@ -207,9 +207,7 @@ class LibraryController extends AbstractController implements INavigable {
 	}
 	
 	private OnBookListLoaded(aEvent:LibraryEvent):void {
-		
 		this.mLibraryModel.FormatBookData(this.mSearchController.results);
-		
 		this.mSearchMode = "title";
 		
 		this.RefreshGridList();
@@ -224,10 +222,8 @@ class LibraryController extends AbstractController implements INavigable {
 			if(this.mGridItemList[i].view == aBookTemplate){
 				
 				this.mGridItemList[i].loaded = true;
-				
 				document.getElementById("grid")
-					.insertAdjacentHTML("beforeend", 
-										aBookTemplate.RenderTemplate({ Data:this.mGridItemList[i].book }));
+					.insertAdjacentHTML("beforeend", aBookTemplate.RenderTemplate({ElasticObject:this.mGridItemList[i].book}));
 				break;
 			}
 		}

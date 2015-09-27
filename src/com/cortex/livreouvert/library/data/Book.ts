@@ -14,47 +14,55 @@
  * @author Mathieu 'Sanchez' Cote
  */
 
-import ComponentData = require("../../../core/component/data/ComponentData");
+import ElasticInterface = require("./ElasticInterface");
+import ElasticTypes = require("./ElasticTypes");
+import Genre = require("./Genre");
+import Author = require("./Author");
 
-class Book extends ComponentData {
+class Book implements ElasticInterface {
 	
 	private mISBN:string;
 	private mType:string;
 	private mTitle:string;
-	private mAuthor:string;
+
 	private mCollection:string;
 	private mImage:string;
 	
-	constructor() {
-		
-		super();
-	}
+	private mGenre:Genre;
+	private mAuthor:Author;
 	
 	public get ISBN():string { return this.mISBN; }
 	public set ISBN(aValue:string) { this.mISBN = aValue; }
 	
-	public get Type():string { return this.mType; }
-	public set Type(aValue:string) { this.mType = aValue; }
-	
 	public get Title():string { return this.mTitle; }
 	public set Title(aValue:string) { this.mTitle = aValue; }
 	
-	public get Author():string { return this.mAuthor; }
-	public set Author(aValue:string) { this.mAuthor = aValue; }
-	
+	public get Author():Author { return this.mAuthor; }	
+	public get Genre():Genre { return this.mGenre; }
+
 	public get Collection():string { return this.mCollection; }
 	public set Collection(aValue:string) { this.mCollection = aValue; }
 	
 	public get Image():string { return this.mImage; }
 	public set Image(aValue:string) { this.mImage = aValue; }
 	
-	public FromJSON(aData:any):void{
-		this.mTitle = aData.name;
-		this.mAuthor = aData.author;
-		this.mType = "book";
-		this.mImage = aData.image;
-		this.ISBN = aData.isbn;
-		this.mTitle = aData.title;
+	/**
+	 * Interface methods
+	 */
+	
+	public Type():ElasticTypes {
+		return ElasticTypes.Book; 
+	}
+	
+	public LoadJSON(json:any):void {
+		this.mTitle = json.name;
+		this.mAuthor = json.author;
+		this.mImage = json.image;
+		this.ISBN = json.isbn;
+		this.mAuthor = new Author();
+		this.mAuthor.Name = json.author;
+		this.mGenre = new Genre();
+		this.mGenre.Title = json.genre;
 	}
 }
 
