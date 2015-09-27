@@ -93,19 +93,45 @@ class SearchController extends AbstractController implements INavigable {
 	public Search(aKeyword:string, aAutoComplete:boolean, aFields:string[]):void{
 		
 		LazyLoader.killLast();
-			
-		this.mSearchModel.AddEventListener(SearchEvent.RESULTS, this.OnSearchResults, this);
-		this.mSearchModel.RequestSearch(aKeyword, aAutoComplete, aFields);
+
+		if(this.mSearchMode == "author"){
+			this.mSearchModel.AddEventListener(SearchEvent.RESULTS_AUTHOR, this.OnSearchResults, this);
+			this.mSearchModel.RequestAuthorTopList(aKeyword);
+		}else if(this.mSearchMode == "genre"){
+			this.mSearchModel.AddEventListener(SearchEvent.RESULTS_GENRE, this.OnSearchResults, this);
+			this.mSearchModel.RequestTopGenreList(aKeyword);
+		}else{
+			this.mSearchModel.AddEventListener(SearchEvent.RESULTS_BOOK, this.OnSearchResults, this);
+			this.mSearchModel.RequestSearch(aKeyword, aAutoComplete, aFields);
+		}
+	}
+	
+	public GetTopGenreList(aKeyword:string):void{
+		
+		this.mSearchModel.AddEventListener(SearchEvent.RESULTS_BOOK, this.OnSearchResults, this);
+		this.mSearchModel.RequestGenreTopList(aKeyword);
 	}
 	
 	private OnSearchResults(aEvent:SearchEvent):void{
 		
-		this.mSearchModel.RemoveEventListener(SearchEvent.RESULTS, this.OnSearchResults, this);
-		this.results = this.mSearchModel.mDataCache[SearchModel.BASE_URL];
+		this.mSearchModel.RemoveEventListener(aEvent.eventName, this.OnSearchResults, this);
+		
+		if(this.mSearchMode == "author"){
+			
+			this.results = this.mSearchModel.mAuthorList;
+			
+		}else if(this.mSearchMode == "genre"){
+			
+			this.results = this.mSearchModel.mGenreList;
+			
+		}else{
+			
+			this.results = this.mSearchModel.mBookList;
+		}
 		
 		document.getElementById("typeAHeadresults").innerHTML = this.mSearchView.RenderTemplate(this.results);
 		
-		this.DispatchEvent(new SearchEvent(SearchEvent.RESULTS));
+		this.DispatchEvent(new SearchEvent(aEvent.eventName));
 		this.bindEvents();
 	}
 	

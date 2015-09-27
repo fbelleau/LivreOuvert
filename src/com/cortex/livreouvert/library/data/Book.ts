@@ -58,7 +58,7 @@ class Book implements ElasticInterface {
 		this.mTitle = json.name;
 		this.mAuthor = json.author;
 		this.mImage = json.image;
-		this.ISBN = json.isbn;
+		this.ISBN = (json.isbn == "") ? "" + Math.random() * 10000000 : json.isbn;
 		this.mAuthor = new Author();
 		this.mAuthor.Name = json.author;
 		this.mGenre = new Genre();

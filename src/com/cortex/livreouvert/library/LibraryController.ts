@@ -25,6 +25,7 @@ import Logger = require("../../core/debug/Logger");
 import LibraryModel = require("./LibraryModel");
 import LibraryEvent = require("./event/LibraryEvent");
 import Book = require("./data/Book");
+import Genre = require("./data/Genre");
 
 import SearchController = require("../search/SearchController");
 import SearchEvent = require("../search/event/SearchEvent");
@@ -41,6 +42,7 @@ class LibraryController extends AbstractController implements INavigable {
 	private mGridItemList:Array<any>;
 	
 	private mSearchController:SearchController;
+	
 	private mMasonry:any;
 	
 	private mSearchMode:string;
@@ -100,7 +102,7 @@ class LibraryController extends AbstractController implements INavigable {
 		
 		this.mSearchController = new SearchController();
 		this.mSearchController.Init('searchBar');
-		this.mSearchController.AddEventListener(SearchEvent.RESULTS, this.OnBookListLoaded, this);
+		this.mSearchController.AddEventListener(SearchEvent.RESULTS_BOOK, this.OnBookListLoaded, this);
 		
 		this.mLibraryView.AddEventListener(MouseTouchEvent.TOUCHED, this.OnScreenClicked, this);
 		
@@ -113,7 +115,9 @@ class LibraryController extends AbstractController implements INavigable {
 		
 		while(this.mGridItemList.length > 0) {
 			
-			gridDiv.removeChild(gridDiv.children[0]);
+			if(gridDiv.children[0] != null){
+				gridDiv.removeChild(gridDiv.children[0]);
+			}
 			this.mGridItemList.splice(0,1);
 		}
 		
@@ -121,11 +125,11 @@ class LibraryController extends AbstractController implements INavigable {
 			
 			this.ShowMenuList();
 			
-		} if(this.mSearchMode == "auteurs"){
+		} if(this.mSearchMode == "author"){
 			
 			this.ShowAuthorList();
 			
-		} if(this.mSearchMode == "genres"){
+		} if(this.mSearchMode == "genre"){
 			
 			this.ShowGenreList();
 			
@@ -140,7 +144,26 @@ class LibraryController extends AbstractController implements INavigable {
 	}
 	
 	private ShowGenreList():void{
+		debugger
+		var genreList:Array<Genre> = this.mSearchController.results;
 		
+		for(var i:number = 0; i < genreList.length; i++){
+			
+			var gridItem:AbstractView = new AbstractView();
+			
+			gridItem.AddEventListener(MVCEvent.TEMPLATE_LOADED, this.OnGenreTemplateLoaded, this);
+			
+			gridItem.LoadTemplate("templates/library/gridItem.html");
+			
+			this.mGridItemList.push({view:gridItem, genre:genreList[i], loaded:false});
+		}
+	}
+	
+	private OnGenreTemplateLoaded(aEvent:MVCEvent):void{
+		
+		this.SetupGenreTemplate(<AbstractView>aEvent.target);
+		
+		this.InitMasonry();
 	}
 	
 	private ShowMenuList():void {
@@ -161,6 +184,26 @@ class LibraryController extends AbstractController implements INavigable {
 			
 			this.mGridItemList.push({view:gridItem, menu:menuList[i], loaded:false});
 		}
+	}
+	
+	private SetupGenreTemplate(aGenreTemplate:AbstractView):void{
+		
+		aGenreTemplate.RemoveEventListener(MVCEvent.TEMPLATE_LOADED, this.OnGenreTemplateLoaded, this);
+		
+		for(var i:number = 0; i < this.mGridItemList.length; i++){
+			
+			if(this.mGridItemList[i].view == aGenreTemplate){
+				
+				this.mGridItemList[i].loaded = true;
+				
+				document.getElementById("grid")
+					.insertAdjacentHTML("beforeend", 
+										aGenreTemplate.RenderTemplate({ ElasticObject:this.mGridItemList[i].genre }));
+				break;
+			}
+		}
+		
+		this.mLibraryView.AddClickControl(document.getElementById("genre"+this.mGridItemList[i].genre.Title));
 	}
 	
 	private SetupMenuTemplate(aMenuTemplate:AbstractView):void {
@@ -204,13 +247,6 @@ class LibraryController extends AbstractController implements INavigable {
 			
 			this.mGridItemList.push({view:gridItem, book:bookList[i], loaded:false});
 		}
-	}
-	
-	private OnBookListLoaded(aEvent:LibraryEvent):void {
-		this.mLibraryModel.FormatBookData(this.mSearchController.results);
-		this.mSearchMode = "title";
-		
-		this.RefreshGridList();
 	}
 	
 	private SetupBookTemplate(aBookTemplate:AbstractView):void {
@@ -284,8 +320,52 @@ class LibraryController extends AbstractController implements INavigable {
 		
 		this.mSearchController.mSearchMode = this.mSearchMode;
 		
-		this.mSearchController.AddEventListener(SearchEvent.RESULTS, this.OnBookListLoaded, this);
-		this.mSearchController.Search("", true, [this.mSearchMode]);
+		if(this.mSearchMode == "genre"){
+			
+			this.mSearchController.AddEventListener(SearchEvent.RESULTS_GENRE, this.OnGenreListLoaded, this);
+			
+		}else if(this.mSearchMode == "author"){
+			
+			this.mSearchController.AddEventListener(SearchEvent.RESULTS_AUTHOR, this.OnAuthorListLoaded, this);
+				
+		}else{
+			
+			this.mSearchController.AddEventListener(SearchEvent.RESULTS_BOOK, this.OnBookListLoaded, this);
+		}
+		
+		this.mSearchController.Search("", false, [this.mSearchMode]);
+	}
+	
+	private OnGenreClick(aElement:HTMLElement):void{
+		
+		var genre:string = aElement.id.split("genre")[1];
+		
+		this.mSearchController.mSearchMode = this.mSearchMode;
+		
+		this.mSearchController.GetTopGenreList(genre);
+	}
+	
+	private OnBookListLoaded(aEvent:LibraryEvent):void {
+		
+		this.mSearchController.RemoveEventListener(SearchEvent.RESULTS_BOOK, this.OnBookListLoaded, this);
+		
+		this.mSearchMode = "title";
+		
+		this.RefreshGridList();
+	}
+	
+	private OnGenreListLoaded(aEvent:MVCEvent):void {
+		
+		this.mSearchController.RemoveEventListener(SearchEvent.RESULTS_GENRE, this.OnGenreListLoaded, this);
+		
+		this.RefreshGridList();
+	}
+	
+	private OnAuthorListLoaded(aEvent:MVCEvent):void{
+		
+		this.mSearchController.RemoveEventListener(SearchEvent.RESULTS_AUTHOR, this.OnAuthorListLoaded, this);
+		
+		this.RefreshGridList();
 	}
 	
 	private OnScreenClicked(aEvent:MVCEvent):void{
@@ -295,6 +375,10 @@ class LibraryController extends AbstractController implements INavigable {
 		if(element.id.indexOf("menu") >= 0) {
 			
 			this.OnMenuClick(element);
+			
+		}else if(element.id.indexOf("genre") >= 0) {
+			
+			this.OnGenreClick(element);
 			
 		}else{
 			

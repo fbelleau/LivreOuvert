@@ -1,10 +1,10 @@
 {% if(o.ElasticObject.Type() == 0) { %}
 <div class="grid-item" id="{%=o.ElasticObject.ISBN %}">
-	<div style="width:200px; height:250px; overflow-y:hidden; float:left">
+	<div style="width:200px; height:250px; overflow-y:hidden; float:left; background-color:grey">
 		{% if(o.ElasticObject.Image) { %}
 			<img style="width:200px;" src="{%=o.ElasticObject.Image %}">
 		{% } else { %}
-			<div style="width:200px;height:250px;background-color:grey">{%=o.ElasticObject.Title %}</div>
+			{%=o.ElasticObject.Title %}
 		{% } %}
 	</div>
 	<div class="book-data" id="title{%=o.ElasticObject.ISBN %}">
@@ -20,7 +20,11 @@
 <div class="grid-item" id="{%=o.ElasticObject.ISBN %}">
 	<div id="title{%=o.ElasticObject.Name %}" style="width:200px; height:250px; float:left">{%=o.ElasticObject.Name %}</div>
 {% } else if(o.ElasticObject.Type() == 2) { %}
-
+<div class="grid-item" id="genre{%=o.ElasticObject.Title %}">
+	<div style="width:200px; height:250px; overflow-y:hidden; float:left; background-color:grey">
+		<img style="width:200px;" src="{%=o.ElasticObject.Image %}">
+		<div>{%=o.ElasticObject.Title %}</div>
+	</div>
 {% } else { %}
 <div class="grid-item" style="background-color:hotpink">
 	<div id="menu{%=o.ElasticObject.Name %}" style="width:200px; height:250px; float:left">{%=o.ElasticObject.Name %}</div>
