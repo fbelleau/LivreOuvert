@@ -1,13 +1,2 @@
 <div id="searchResults">
-	{% if(o.hits && o.hits.hits.length > 0) { %}
-		<ul>
-		{% for(var i=0; i<o.hits.hits.length; i++) { %}
-			{% if(o.hits.hits[i].highlight) { %}
-			<li>{%#o.hits.hits[i].highlight.name %}</li>
-			{% } else { %}
-
-			{% } %}
-		{% } %}
-		</ul>
-	{% } %}
 </div>
