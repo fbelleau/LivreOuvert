@@ -146,9 +146,9 @@ class LibraryController extends AbstractController implements INavigable {
 	private ShowMenuList():void {
 		
 		var menuList:Array<any> = [
-									{Type:"menu", Name:"auteurs"},
-									{Type:"menu", Name:"genres"},
-									{Type:"menu", Name:"titres"}
+									{Type:function() { return "menu"; }, Name:"author"},
+									{Type:function() { return "menu"; }, Name:"genre"},
+									{Type:function() { return "menu"; }, Name:"title"}
 								];
 		
 		for(var i:number = 0; i < menuList.length; i++){
@@ -175,7 +175,7 @@ class LibraryController extends AbstractController implements INavigable {
 				
 				document.getElementById("grid")
 					.insertAdjacentHTML("beforeend", 
-										aMenuTemplate.RenderTemplate({ Data:this.mGridItemList[i].menu }));
+										aMenuTemplate.RenderTemplate({ ElasticObject:this.mGridItemList[i].menu }));
 				break;
 			}
 		}
@@ -282,7 +282,8 @@ class LibraryController extends AbstractController implements INavigable {
 			
 		this.mSearchMode = aElement.id.split("menu")[1];
 		
-		this.RefreshGridList();	
+		this.mSearchController.AddEventListener(SearchEvent.RESULTS, this.OnBookListLoaded, this);
+		this.mSearchController.Search("", true, [this.mSearchMode]);
 	}
 	
 	private OnScreenClicked(aEvent:MVCEvent):void{

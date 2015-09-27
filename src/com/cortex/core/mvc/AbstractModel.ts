@@ -33,7 +33,7 @@ class AbstractModel extends EventDispatcher {
 		super();
 	}
 
-	public Fetch(aURL:string, aForceRefresh:boolean = false): void {
+	public Get(aURL:string, aForceRefresh:boolean = false): void {
 		
 		if (!aForceRefresh && this.mDataCache[aURL] != null) {
 			this.OnJSONLoadSuccess(this.mDataCache[aURL], aURL);
@@ -44,7 +44,13 @@ class AbstractModel extends EventDispatcher {
 		promise.then(() => this.OnJSONLoadSuccess( promise.result, aURL) );
 		promise.fail(() => this.OnJSONLoadError(aURL) );
 	}
-
+	public Post(aURL:string, aQuery:any, aAsync:boolean = true): void {
+		
+		var promise = LazyLoader.sendJSON(aURL, aQuery, aAsync);
+		
+		promise.then(() => this.OnJSONLoadSuccess( promise.result, aURL) );
+		promise.fail(() => this.OnJSONLoadError(aURL) );
+	}
 	private GetData(aURL:string): any {
 		
 		return this.mDataCache[aURL];
