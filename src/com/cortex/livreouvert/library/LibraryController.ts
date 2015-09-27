@@ -121,10 +121,26 @@ class LibraryController extends AbstractController implements INavigable {
 			
 			this.ShowMenuList();
 			
+		} if(this.mSearchMode == "auteurs"){
+			
+			this.ShowAuthorList();
+			
+		} if(this.mSearchMode == "genres"){
+			
+			this.ShowGenreList();
+			
 		} else {
 			
 			this.ShowBookList();
 		}
+	}
+	
+	private ShowAuthorList():void{
+		
+	}
+	
+	private ShowGenreList():void{
+		
 	}
 	
 	private ShowMenuList():void {
@@ -267,17 +283,10 @@ class LibraryController extends AbstractController implements INavigable {
 	}
 	
 	private OnMenuClick(aElement:HTMLElement):void{
-
-		if(aElement.className == "grid-item"){
 			
-			aElement.className = "grid-item-selected";
-			document.getElementById(aElement.id).style.visibility = "visible";
-			
-		} else {
-			
-			aElement.className = "grid-item";
-			document.getElementById(aElement.id).style.visibility = "hidden";
-		}
+		this.mSearchMode = aElement.id.split("menu")[1];
+		
+		this.RefreshGridList();	
 	}
 	
 	private OnScreenClicked(aEvent:MVCEvent):void{
