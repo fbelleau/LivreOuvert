@@ -25,7 +25,7 @@ class SearchModel extends AbstractModel {
 	
 	private static mInstance:SearchModel;
 	
-	public static BASE_URL:string = "http://louiscyr2.bio2rdf.org/biblio-lo-v2/_search";
+	public static BASE_URL:string = "http://louiscyr2.bio2rdf.org/biblio-*/_search";
 	
 	constructor() {
 		

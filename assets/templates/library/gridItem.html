@@ -1,17 +1,21 @@
 {% if(o.ElasticObject.Type() == 0) { %}
 <div class="grid-item" id="{%=o.ElasticObject.ISBN %}">
 	<div style="width:200px; height:250px; overflow-y:hidden; float:left">
-		<img style="width:200px;" src="{%=o.ElasticObject.Image %}">
+		{% if(o.ElasticObject.Image) { %}
+			<img style="width:200px;" src="{%=o.ElasticObject.Image %}">
+		{% } else { %}
+			<div style="width:200px;height:250px;background-color:grey">{%=o.ElasticObject.Title %}</div>
+		{% } %}
 	</div>
 	<div class="book-data" id="title{%=o.ElasticObject.ISBN %}">
-			<div class="title"><h2>{%=o.ElasticObject.Title %}</h2></div>
-			<ul>
-				<li><a href="#" class="like-button">J'aime</a></li>
-				<li>1999 <!-- Put real date here --></li>
-				<li>{%=o.ElasticObject.Author.Name %}</li>
-				<li>{%=o.ElasticObject.Genre.Title %}</li>
-			</ul>
-		</div>
+		<div class="title"><h2>{%=o.ElasticObject.Title %}</h2></div>
+		<ul>
+			<li><a href="#" class="like-button">J'aime</a></li>
+			<li>1999 <!-- Put real date here --></li>
+			<li>{%=o.ElasticObject.Author.Name %}</li>
+			<li>{%=o.ElasticObject.Genre.Title %}</li>
+		</ul>
+	</div>
 {% } else if(o.ElasticObject.Type() == 1) { %}
 <div class="grid-item" id="{%=o.ElasticObject.ISBN %}">
 	<div id="title{%=o.ElasticObject.Name %}" style="width:200px; height:250px; float:left">{%=o.ElasticObject.Name %}</div>

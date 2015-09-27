@@ -5,7 +5,7 @@
 			{% if(o.hits.hits[i].highlight) { %}
 			<li>{%#o.hits.hits[i].highlight.name %}</li>
 			{% } else { %}
-			<li>{%=o.hits.hits[i]._source.fields.name %}</li>
+
 			{% } %}
 		{% } %}
 		</ul>

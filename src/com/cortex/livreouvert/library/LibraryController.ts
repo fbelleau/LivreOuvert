@@ -282,6 +282,8 @@ class LibraryController extends AbstractController implements INavigable {
 			
 		this.mSearchMode = aElement.id.split("menu")[1];
 		
+		this.mSearchController.mSearchMode = this.mSearchMode;
+		
 		this.mSearchController.AddEventListener(SearchEvent.RESULTS, this.OnBookListLoaded, this);
 		this.mSearchController.Search("", true, [this.mSearchMode]);
 	}

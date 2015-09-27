@@ -34,6 +34,8 @@ class SearchController extends AbstractController implements INavigable {
 	private mTimeout;
 	public results;
 	
+	public mSearchMode:string = "name";
+	
 	constructor() {
 		super();
 		NavigationManager.Register(this);
@@ -84,7 +86,7 @@ class SearchController extends AbstractController implements INavigable {
 			
 			keywords = keywords.replace('-',' ');
 			
-			this.Search(keywords, true, ["name"]);	
+			this.Search(keywords, true, [this.mSearchMode]);	
 		}
 	}
 	
@@ -98,7 +100,6 @@ class SearchController extends AbstractController implements INavigable {
 	
 	private OnSearchResults(aEvent:SearchEvent):void{
 		
-		debugger;
 		this.mSearchModel.RemoveEventListener(SearchEvent.RESULTS, this.OnSearchResults, this);
 		this.results = this.mSearchModel.mDataCache[SearchModel.BASE_URL];
 		
