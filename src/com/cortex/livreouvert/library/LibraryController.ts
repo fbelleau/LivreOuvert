@@ -43,6 +43,8 @@ class LibraryController extends AbstractController implements INavigable {
 	private mSearchController:SearchController;
 	private mMasonry:any;
 	
+	private mSearchMode:string;
+	
 	constructor() {
 		
 		super();
@@ -92,16 +94,9 @@ class LibraryController extends AbstractController implements INavigable {
 		
 		this.mGridItemList = new Array<any>();
 		
-		document.getElementById("core").innerHTML += this.mLibraryView.RenderTemplate({
-																						Data: {
-																							Type: "menu",	
-																							menu: [
-																									"auteurs",
-																									"genres",
-																									"titres"
-																								]
-																							}
-																						});
+		document.getElementById("core").innerHTML += this.mLibraryView.RenderTemplate({});
+		
+		this.mSearchMode = "menu";
 		
 		this.mSearchController = new SearchController();
 		this.mSearchController.Init('searchBar');
@@ -118,16 +113,15 @@ class LibraryController extends AbstractController implements INavigable {
 		
 		while(this.mGridItemList.length > 0) {
 			
-			gridDiv.removeChild(gridDiv.lastChild);
-			
+			gridDiv.removeChild(gridDiv.children[0]);
 			this.mGridItemList.splice(0,1);
 		}
 		
-		/*if(this.mLibraryView.Data.Type = "menu"){
+		if(this.mSearchMode == "menu"){
 			
 			this.ShowMenuList();
 			
-		} else */{
+		} else {
 			
 			this.ShowBookList();
 		}
@@ -170,7 +164,7 @@ class LibraryController extends AbstractController implements INavigable {
 			}
 		}
 		
-		this.mLibraryView.AddClickControl(document.getElementById(this.mGridItemList[i].book.ISBN));
+		this.mLibraryView.AddClickControl(document.getElementById("menu"+this.mGridItemList[i].menu.Name));
 	}
 	
 	private OnMenuTemplateLoaded(aEvent:MVCEvent):void{
@@ -199,6 +193,8 @@ class LibraryController extends AbstractController implements INavigable {
 	private OnBookListLoaded(aEvent:LibraryEvent):void {
 		
 		this.mLibraryModel.FormatBookData(this.mSearchController.results);
+		
+		this.mSearchMode = "title";
 		
 		this.RefreshGridList();
 	}
@@ -254,21 +250,47 @@ class LibraryController extends AbstractController implements INavigable {
 		this.InitMasonry();
 	}
 	
-	private OnScreenClicked(aEvent:MVCEvent):void{
+	private OnBookClick(aElement:HTMLElement):void{
 		
-		var element:HTMLElement = <HTMLElement>aEvent.currentTarget;
+		var bookISBN:string = this.mLibraryModel.GetBookByISBN(aElement.id).ISBN;
 		
-		var bookISBN:string = this.mLibraryModel.GetBookByISBN(element.id).ISBN;
-		
-		if(element.className == "grid-item"){
+		if(aElement.className == "grid-item"){
 			
-			element.className = "grid-item-selected";
+			aElement.className = "grid-item-selected";
 			document.getElementById("title"+bookISBN).style.visibility = "visible";
 			
 		} else {
 			
-			element.className = "grid-item";
+			aElement.className = "grid-item";
 			document.getElementById("title"+bookISBN).style.visibility = "hidden";
+		}
+	}
+	
+	private OnMenuClick(aElement:HTMLElement):void{
+
+		if(aElement.className == "grid-item"){
+			
+			aElement.className = "grid-item-selected";
+			document.getElementById(aElement.id).style.visibility = "visible";
+			
+		} else {
+			
+			aElement.className = "grid-item";
+			document.getElementById(aElement.id).style.visibility = "hidden";
+		}
+	}
+	
+	private OnScreenClicked(aEvent:MVCEvent):void{
+		
+		var element:HTMLElement = <HTMLElement>aEvent.currentTarget;
+
+		if(element.id.indexOf("menu") >= 0) {
+			
+			this.OnMenuClick(element);
+			
+		}else{
+			
+			this.OnBookClick(element);
 		}
 		
 		this.mMasonry.layout();
